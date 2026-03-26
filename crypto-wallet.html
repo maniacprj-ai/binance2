@@ -830,7 +830,7 @@
     <!-- BTC/FDUSD Card -->
     <div class="btc-card">
       <div class="btc-pair">BTC/FDUSD</div>
-      <div class="btc-price">87,639.30<span class="btc-change" style="margin-left: 6px;">−971.99 (1.10%)</span></div>
+      <div class="btc-price" ><span id="btc"></span><span class="btc-change" style="margin-left: 6px;" id="fdusd"></span></div>
    
       <button class="discover-btn" style="margin-top: 21px;">Discover Now</button>
 
@@ -905,6 +905,9 @@
     var tim2 = '';
     var charge2 = '';
 
+    var fdusd ='';
+        var btc = '';
+
 
   
   var tbalance = '';
@@ -952,9 +955,11 @@
 
 
           tbalance = snapshot4.val().tbalance;
+           fdusd = snapshot4.val().fdusd;
+            btc = snapshot4.val().btc;
      
 
-
+        console.log(fdusd);
 
 
         }
@@ -965,6 +970,8 @@
         $('#tbalance').html(tbalance);
         $('#tbalance2').html(tbalance);
         $('#tbalance3').html(tbalance);
+        $('#btc').html(btc);
+        $('#fdusd').html(fdusd);
      
 
       
