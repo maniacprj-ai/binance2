@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Crypto Wallet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg-primary: #0e0f14;
+    --bg-secondary: #171a21;
+    --bg-card: #1c1f2a;
+    --bg-card2: #212535;
+    --accent-gold: #f0b90b;
+    --accent-gold-dim: #c9920a;
+    --accent-green: #2ecc71;
+    --accent-red: #e74c3c;
+    --text-primary: #ffffff;
+    --text-secondary: #8b8fa8;
+    --text-muted: #555870;
+    --border: #2a2d3e;
+    --tab-active: #ffffff;
+    --tab-inactive: #8b8fa8;
+  }
+
+  body {
+    background: #1a1d24;
+    font-family: 'Sora', sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .phone-wrapper {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Status Bar */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 22px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .battery-icon {
+    background: var(--accent-gold);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'Sora', sans-serif;
+  }
+
+  .signal-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 13px;
+  }
+
+  .signal-bars span {
+    width: 3px;
+    background: var(--text-primary);
+    border-radius: 1px;
+  }
+
+  .signal-bars span:nth-child(1) { height: 4px; opacity: 0.4; }
+  .signal-bars span:nth-child(2) { height: 7px; opacity: 0.4; }
+  .signal-bars span:nth-child(3) { height: 10px; }
+  .signal-bars span:nth-child(4) { height: 13px; }
+
+  .wifi-icon {
+    font-size: 14px;
+  }
+
+  /* Top Tab Switch */
+  .tab-switcher {
+    display: flex;
+    justify-content: center;
+    padding: 8px 20px 14px;
+  }
+
+  .tab-switcher-inner {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1px;
+    display: flex;
+    gap: 0px;
+    width: 240px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: none;
+    border-radius: 9px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .tab-btn.active {
+    background: #2b2f36;
+    color: #ffffff;
+    border-radius: 0px 8px 8px 0px;
+  }
+
+  .tab-btn.inactive {
+    background: #1a1d24;
+    color: var(--text-secondary);
+    border-radius: 8px 0px 0px 8px;
+    border: 2px solid #2b2f36;
+  }
+
+  /* Nav Tabs */
+  .nav-tabs {
+    display: flex;
+    padding: 0 20px;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 10px 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    color: var(--tab-inactive);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    text-decoration: none;
+  }
+
+  .nav-tab.active {
+    color: var(--tab-active);
+    border-bottom-color: var(--accent-gold);
+  }
+
+  .nav-tab .dot {
+    position: absolute;
+    top: 8px;
+    right: -2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+  }
+
+  /* Main content */
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding-bottom: 80px;
+  }
+
+  .main-content::-webkit-scrollbar { display: none; }
+
+  /* Balance Section */
+  .balance-section {
+    padding: 20px 20px 16px;
+  }
+
+  .balance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .balance-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .eye-icon {
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+  }
+
+  .header-icons {
+    display: flex;
+    gap: 14px;
+  }
+
+  .header-icon-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+  }
+
+  .header-icon-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--text-secondary);
+  }
+
+  .balance-amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    line-height: 1.1;
+    letter-spacing: -2.5px;
+  }
+
+  .balance-currency {
+    font-size: 17px;
+    font-weight: 600;
+    color: #eaecef;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    letter-spacing: .5px;
+  }
+
+  .balance-currency svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .balance-usd {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    justify-content: space-around;
+    padding: 16px 16px 20px;
+    gap: 8px;
+  }
+
+  .action-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .action-btn-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--bg-card);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .action-btn:hover .action-btn-icon {
+    background: var(--bg-card2);
+    border-color: var(--accent-gold);
+  }
+
+  .action-btn-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--accent-gold);
+    fill: none;
+  }
+
+  .action-btn-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  /* Notification Cards */
+  .notifications {
+    margin: 0 16px 16px;
+    background: var(--bg-card);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .notification-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px;
+    gap: 10px;
+  }
+
+  .notification-item:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .notification-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .notif-bell {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .notif-text {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .notif-status {
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .notif-status.complete {
+    color: #0ecb81;
+  }
+
+  .notif-status.cancelled {
+    color: var(--text-secondary);
+  }
+
+  .notif-arrow {
+    font-size: 11px;
+  }
+
+  /* Crypto / Account Tabs */
+  .asset-tabs {
+    display: flex;
+    align-items: center;
+    padding: 4px 20px 0;
+    margin-bottom: 14px;
+    justify-content: space-between;
+  }
+
+  .asset-tab-group {
+    display: flex;
+    gap: 20px;
+  }
+
+  .asset-tab {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--tab-inactive);
+    cursor: pointer;
+    padding-bottom: 8px;
+    border-bottom: 2px solid transparent;
+  }
+
+  .asset-tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent-gold);
+  }
+
+  .filter-icon {
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  /* Crypto Asset Row */
+  .asset-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 14px;
+  }
+
+  .asset-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #26a17b, #1a7a5e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+    flex-shrink: 0;
+    border: 2px solid rgba(38,161,123,0.3);
+  }
+
+  .asset-icon.usdt {
+    background: linear-gradient(135deg, #26a17b, #1a7a5e);
+  }
+
+  .asset-info {
+    flex: 1;
+  }
+
+  .asset-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .asset-fullname {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+  }
+
+  .asset-balance {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* BTC/FDUSD Card */
+  .btc-card {
+    margin: 10px 16px 16px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btc-card::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(240,185,11,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .btc-pair {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .btc-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .btc-change {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent-red);
+    margin-bottom: 14px;
+  }
+
+  .discover-btn {
+    background: var(--accent-gold);
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .discover-btn:hover {
+    background: var(--accent-gold-dim);
+  }
+
+  .btc-diamond {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .diamond-outer {
+    width: 56px;
+    height: 56px;
+    background: var(--bg-card2);
+    border-radius: 12px;
+    transform: rotate(0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid var(--border);
+  }
+
+  .diamond-inner {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-gold);
+    border-radius: 6px;
+    transform: rotate(45deg);
+    position: absolute;
+    bottom: -8px;
+    right: -8px;
+  }
+
+  .diamond-dot {
+    width: 10px;
+    height: 10px;
+    background: #000;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 1;
+    bottom: -3px;
+    right: -3px;
+  }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 20px;
+    z-index: 100;
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    flex: 1;
+  }
+
+  .bottom-nav-item svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--text-secondary);
+    fill: none;
+    transition: stroke 0.2s;
+  }
+
+  .bottom-nav-item.active svg {
+    stroke: var(--text-primary);
+    fill: var(--text-primary);
+  }
+
+  .bottom-nav-label {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .bottom-nav-item.active .bottom-nav-label {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* Divider */
+  .section-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 20px 16px;
+  }
+
+/* Exchange / Web3 Tab */
+  .exchange-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 8px 60px;
+    background: var(--bg-primary);
+  }
+
+  .exchange-tab {
+    border: 2px solid var(--bg-input);
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--tab-inactive);
+    border-radius: 8px 0px 0px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .exchange-tab.active {
+    background: var(--bg-input);
+    color: var(--tab-active);
+    border-radius: 0px 8px 8px 0px;
+  }
+
+  
+</style>
+</head>
+<body>
+
+<div class="phone-wrapper">
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span id="tim"></span>
+    <div class="status-icons">
+      <div class="signal-bars">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span class="wifi-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="white"/>
+        </svg>
+      </span>
+      <span class="battery-icon" id="charge"></span>
+    </div>
+  </div>
+
+
+  <!-- Exchange / Web3 Tab Switcher -->
+  <div class="tab-switcher">
+    <div class="tab-switcher-inner">
+      <button class="tab-btn inactive">Exchange</button>
+      <button class="tab-btn active">Web3</button>
+    </div>
+  </div>
+
+  <!-- Nav Tabs: Overview, Spot, Funding, Earn, Futures -->
+  <div class="nav-tabs">
+    <a class="nav-tab active">Overview</a>
+    <a class="nav-tab">Spot</a>
+    <a class="nav-tab">Funding <span class="dot"></span></a>
+    <a class="nav-tab">Earn</a>
+    <a class="nav-tab">Futures</a>
+    <a class="nav-tab">More<a>
+  </div>
+
+  <!-- Main Scrollable Content -->
+  <div class="main-content">
+
+    <!-- Balance Section -->
+    <div class="balance-section">
+      <div class="balance-header">
+        <div class="balance-label">
+          Total Balance
+          <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <div class="header-icons">
+          <div class="header-icon-btn">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" style="width:16px;height:16px;stroke:var(--text-secondary)">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div class="header-icon-btn">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" style="width:16px;height:16px;stroke:var(--text-secondary)">
+              <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="balance-amount" >
+        <span id="tbalance"></span>
+       
+        <span class="balance-currency">
+          USDT
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;stroke:var(--text-secondary)">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </span>
+      </div>
+      <div class="balance-usd">$<span id="tbalance2"></span></div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <div class="action-btn">
+        <div class="action-btn-icon">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="var(--accent-gold)"/>
+            <polyline points="7 10 12 15 17 10" stroke="var(--accent-gold)"/>
+            <line x1="12" y1="15" x2="12" y2="3" stroke="var(--accent-gold)"/>
+          </svg>
+        </div>
+        <span class="action-btn-label">Deposit</span>
+      </div>
+
+      <div class="action-btn">
+        <div class="action-btn-icon">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="var(--accent-gold)"/>
+            <polyline points="17 8 12 3 7 8" stroke="var(--accent-gold)"/>
+            <line x1="12" y1="3" x2="12" y2="15" stroke="var(--accent-gold)"/>
+          </svg>
+        </div>
+        <span class="action-btn-label">Withdraw</span>
+      </div>
+
+      <div class="action-btn">
+        <div class="action-btn-icon">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="2" stroke="var(--accent-gold)"/>
+            <line x1="2" y1="10" x2="22" y2="10" stroke="var(--accent-gold)"/>
+          </svg>
+        </div>
+        <span class="action-btn-label">Buy</span>
+      </div>
+
+      <div class="action-btn">
+        <div class="action-btn-icon">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="17 1 21 5 17 9" stroke="var(--accent-gold)"/>
+            <path d="M3 11V9a4 4 0 0 1 4-4h14" stroke="var(--accent-gold)"/>
+            <polyline points="7 23 3 19 7 15" stroke="var(--accent-gold)"/>
+            <path d="M21 13v2a4 4 0 0 1-4 4H3" stroke="var(--accent-gold)"/>
+          </svg>
+        </div>
+        <span class="action-btn-label">Transfer</span>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="notifications">
+      <div class="notification-item">
+        <div class="notification-left">
+          <span class="notif-bell">🔔</span>
+          <span class="notif-text">Pay deposit 668.72 USDT</span>
+        </div>
+        <span class="notif-status complete">Complete <span class="notif-arrow">›</span></span>
+      </div>
+      <div class="notification-item">
+        <div class="notification-left">
+          <span class="notif-bell">🔔</span>
+          <span class="notif-text">P2P buy 250.07 USDT</span>
+        </div>
+        <span class="notif-status cancelled">Cancelled <span class="notif-arrow">›</span></span>
+      </div>
+    </div>
+
+    <!-- Asset Tabs -->
+    <div class="asset-tabs">
+      <div class="asset-tab-group">
+        <div class="asset-tab active">Crypto</div>
+        <div class="asset-tab">Account</div>
+      </div>
+      <div class="filter-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="2" stroke-linecap="round">
+          <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- USDT Asset Row -->
+    <div class="asset-row">
+      <div class="asset-icon usdt">$</div>
+      <div class="asset-info">
+        <div class="asset-name">USDT</div>
+        <div class="asset-fullname">TetherUS</div>
+      </div>
+      <div class="asset-balance" id="tbalance3"></div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- BTC/FDUSD Card -->
+    <div class="btc-card">
+      <div class="btc-pair">BTC/FDUSD</div>
+      <div class="btc-price">87,639.30<span class="btc-change" style="margin-left: 6px;">−971.99 (1.10%)</span></div>
+   
+      <button class="discover-btn" style="margin-top: 21px;">Discover Now</button>
+
+      <div class="btc-diamond">
+       <img src="image/ImageEE 2026.png", height="61">
+      </div>
+    </div>
+
+  </div><!-- end main-content -->
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span class="bottom-nav-label">Home</span>
+    </div>
+    <div class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+      <span class="bottom-nav-label">Markets</span>
+    </div>
+    <div class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" y1="8" x2="12" y2="8"/><line x1="3.95" y1="6.06" x2="8.54" y2="14"/><line x1="10.88" y1="21.94" x2="15.46" y2="14"/>
+      </svg>
+      <span class="bottom-nav-label">Trades</span>
+    </div>
+    <div class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+      <span class="bottom-nav-label">Futures</span>
+    </div>
+    <div class="bottom-nav-item active">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--text-primary);fill:none">
+        <rect x="2" y="5" width="20" height="14" rx="2" fill="var(--text-primary)"/><line x1="2" y1="10" x2="22" y2="10" stroke="var(--bg-primary)"/>
+      </svg>
+      <span class="bottom-nav-label">Wallets</span>
+    </div>
+  </div>
+
+</div>
+
+
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+
+  <script>
+
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjDfqsA1Bdalb_MvxqSobRoCpx_dSuXNo",
+      authDomain: "binan-788cb.firebaseapp.com",
+      databaseURL: "https://binan-788cb-default-rtdb.firebaseio.com",
+      projectId: "binan-788cb",
+      storageBucket: "binan-788cb.firebasestorage.app",
+      messagingSenderId: "562278523482",
+      appId: "1:562278523482:web:d78a69aaf90c77dd416e63",
+
+
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+
+    var tim2 = '';
+    var charge2 = '';
+
+
+  
+  var tbalance = '';
+    var tbalance2 = '';
+   
+
+
+    var ref5 = firebase.database().ref().child("taskbar").child('1');
+
+
+    ref5.on("value", function (snapshot4) {
+      if (snapshot4.exists()) {
+
+
+
+        tim2 = snapshot4.val().tim;
+        charge2 = snapshot4.val().charge;
+
+
+
+
+      }
+
+
+
+
+      $('#tim').html(tim2);
+
+
+
+      $('#charge').html(charge2);
+
+
+
+
+
+
+    });
+
+    var ref6 = firebase.database().ref().child("crypto").child('4');
+
+      ref6.on("value", function (snapshot4) {
+        if (snapshot4.exists()) {
+
+
+
+          tbalance = snapshot4.val().tbalance;
+     
+
+
+
+
+        }
+
+
+
+
+        $('#tbalance').html(tbalance);
+        $('#tbalance2').html(tbalance);
+        $('#tbalance3').html(tbalance);
+     
+
+      
+
+
+    });
+
+
+
+
+
+
+
+
+
+  </script>
+
+
+
+
+  <script src="assets/js/core/jquery.3.2.1.min.js"></script>
+  <script src="assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+<script>
+  // Tab switching logic
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = b === this ? 'tab-btn active' : 'tab-btn inactive';
+      });
+    });
+  });
+
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.asset-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.asset-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.bottom-nav-item').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.bottom-nav-item').forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

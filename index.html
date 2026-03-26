@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>User Management</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+        name='viewport' />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="assets/css/ready.css">
+    <link rel="stylesheet" href="assets/css/demo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+
+    <style>
+        .action-list li {
+            display: inline-block;
+            margin: 0 5px;
+        }
+
+
+
+        a:hover {
+            text-shadow: 3px 3px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        a:before,
+        a:after {
+            content: attr(data-tip);
+            color: #fff;
+            background-color: #111;
+            font-size: 12px;
+            padding: 5px 7px;
+            border-radius: 4px;
+            text-transform: capitalize;
+            display: none;
+            transform: translateX(-50%);
+            position: absolute;
+            left: 50%;
+            top: -32px;
+            transition: all 0.3s ease 0s;
+        }
+
+
+
+
+        #pagination {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: whitesmoke;
+            font-weight: bold;
+            font-family: sans-serif;
+            font-size: 14px;
+        }
+
+        #pagination a {
+            color: black;
+            float: left;
+            padding: 9px 9px;
+            margin: 3px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #pagination a.active {
+            border-radius: 50%;
+            background-color: #4c4a4a;
+            color: whitesmoke;
+        }
+
+        #pageNumbersContainer {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        #pageNumbers {
+            display: flex;
+            padding: 2px;
+        }
+
+        input[type=number] {
+            width: 40px;
+            height: 25px;
+            border: 1px solid lightgray;
+            text-align: center;
+            margin: 5px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        #goToPage {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        #goToPage button {
+
+            padding: 10px;
+            align-items: center;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            background-color: #4c4a4a;
+            color: whitesmoke;
+            cursor: pointer;
+        }
+
+        #entriesDisplayDiv {
+            display: flex;
+            padding-left: 25px;
+        }
+
+        #entriesDisplayDiv span {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .btn {
+            border: none;
+            background-color: inherit;
+            padding: 14px 28px;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .danger {
+            color: red;
+            font-weight: bold;
+        }
+
+        .form-control2 {
+            display: block;
+            width: 100%;
+
+            font-size: 1rem;
+
+            color: #495057;
+
+            background-clip: padding-box;
+            border: 1px solid #ffffff;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        .nidimg {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+            width: 165px;
+            height: 130px;
+        }
+
+        .button {
+
+            top: 50%;
+            background-color: #0a0a23;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            min-height: 30px;
+            min-width: 120px;
+        }
+
+        .button:focus {
+            outline-color: transparent;
+            outline-style: solid;
+            box-shadow: 0 0 0 4px #5a01a7;
+        }
+
+        .rev {
+            /* padding: 10px 20px; */
+            margin-top: -6px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 14px;
+        }
+
+        .rev:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+
+
+    <div class="content">
+
+
+
+        <div class="card">
+
+            <div class="card-body">
+
+
+
+                <table class="table table-bordered table-bordered-bd-warning mt-4">
+
+                    <tbody>
+
+                        <tr>
+                            <td style="width: 20%;font-weight: bold;font-size: 14px;">Time</td>
+                            <td colspan="4" id="phone"><input type="text" class="form-control2" id="tim"
+                                    placeholder="Enter time"></td>
+
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;font-weight: bold;font-size: 14px;">Charge</td>
+                            <td colspan="4" style="height: 30px;"><input type="text" class="form-control2" id="charge"
+                                    placeholder="Enter Charge"></td>
+
+                        </tr>
+
+
+
+                        <tr>
+                            <td style="font-weight: bold;font-size: 16px;"></td>
+                            <td colspan="4" style="height: 30px;"><button type="button" class="button" id="sub"
+                                    onclick="validate()" style="margin-left: 30%;">Submit Data</button></td>
+
+                        </tr>
+
+
+
+
+
+
+
+
+                        <tr>
+                            <th rowspan="8" style="width: 20%;font-weight: bold;font-size: 14px;">Withdrawal Details
+                            </th>
+                            <td style="font-weight: bold;font-size: 14px;">Amount</td>
+                            <td><input type="text" class="form-control2" id="amnt" placeholder="Enter Amount"></td>
+
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;font-weight: bold;font-size: 14px;">Network</td>
+                            <td><input type="text" class="form-control2" id="network" placeholder="Enter network"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Address</td>
+                            <td><input type="text" class="form-control2" id="address" placeholder="Enter Address"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Txid</td>
+                            <td><input type="text" class="form-control2" id="txid" placeholder="Enter Txid"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Withdrawal Amount</td>
+                            <td><input type="text" class="form-control2" id="wamount"
+                                    placeholder="Enter Withdrawal Amount"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Network fee</td>
+                            <td><input type="text" class="form-control2" id="nfee" placeholder="Enter Network fee"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Withdrawal Wallet</td>
+                            <td><input type="text" class="form-control2" id="wwallet"
+                                    placeholder="Enter Withdrawal Wallet"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Date</td>
+                            <td><input type="text" class="form-control2" id="wdate" placeholder="Enter Date"></td>
+                        </tr>
+
+                        <tr>
+                            <td style="font-weight: bold;font-size: 16px;"></td>
+                            <td colspan="4" style="height: 30px;"><button type="button" class="button" id="sub"
+                                    onclick="validate2()" style="margin-left: 30%;">Submit Data</button>
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+                            <th rowspan="3" style="width: 20%;font-weight: bold;font-size: 14px;">Binance - Deposit
+                            </th>
+                            <td style="font-weight: bold;font-size: 14px;">Deposit Confirmed</td>
+                            <td><input type="text" class="form-control2" id="dconfirm"
+                                    placeholder="Enter "></td>
+
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;font-weight: bold;font-size: 14px;">Time & Date</td>
+                            <td><input type="text" class="form-control2" id="tdate"
+                                    placeholder="Enter Time & Date"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Amount</td>
+                            <td><input type="text" class="form-control2" id="damount"
+                                    placeholder="Enter Amount"></td>
+                        </tr>
+
+                        <tr>
+                            <td style="font-weight: bold;font-size: 16px;"></td>
+                            <td colspan="4" style="height: 30px;"><button type="button" class="button"
+                                    onclick="validate3()" style="margin-left: 30%;">Submit  Data</button>
+                            </td>
+
+                        </tr>
+
+
+
+                          <tr>
+                            <th rowspan="1" style="width: 20%;font-weight: bold;font-size: 14px;">Crypto Wallet
+                            </th>
+                            <td style="font-weight: bold;font-size: 14px;">Total Balance</td>
+                            <td><input type="text" class="form-control2" id="tbalance"
+                                    placeholder="Enter Balance"></td>
+
+                        </tr>
+             
+
+                        <tr>
+                            <td style="font-weight: bold;font-size: 16px;"></td>
+                            <td colspan="4" style="height: 30px;"><button type="button" class="button"
+                                    onclick="validate4()" style="margin-left: 30%;">Submit Data</button>
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <th rowspan="7" style="width: 20%;font-weight: bold;font-size: 14px;">Rejected Details</th>
+                            <td style="font-weight: bold;font-size: 14px;">Rejected Amount</td>
+                            <td><input type="text" class="form-control2" id="ramount" placeholder="Enter Amount">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td style="width: 20%;font-weight: bold;font-size: 14px;">Network</td>
+                            <td><input type="text" class="form-control2" id="rnetwork" placeholder="Enter Network"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Address</td>
+                            <td><input type="text" class="form-control2" id="raddress" placeholder="Enter Address">
+                            </td>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Withdrawal Amount</td>
+                            <td><input type="text" class="form-control2" id="withramount" placeholder="Enter Amount">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Network fee</td>
+                            <td><input type="text" class="form-control2" id="rnfee" placeholder="Enter Network fee">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Withdrawal Wallet</td>
+                            <td><input type="text" class="form-control2" id="rwwallet" placeholder="Enter Withdrawal Wallet"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;font-size: 14px;">Date</td>
+                            <td><input type="text" class="form-control2" id="rdate" placeholder="Enter Date"></td>
+                        </tr>
+
+
+                        <tr>
+                            <td style="font-weight: bold;font-size: 16px;"></td>
+                            <td colspan="4" style="height: 30px;"><button type="button" class="button"
+                                    onclick="validate5()" style="margin-left: 30%;">Submit Data</button></td>
+
+                        </tr>
+
+
+
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+
+
+    </div>
+    <footer class="footer">
+        <div class="container-fluid">
+            <nav class="pull-left">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://www.themekita.com">
+                            ThemeKita
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Help
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://themewagon.com/license/#free-item">
+                            Licenses
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="copyright ml-auto">
+                2018, made with <i class="la la-heart heart text-danger"></i> by <a
+                    href="http://www.themekita.com">ThemeKita</a>
+            </div>
+        </div>
+    </footer>
+
+
+
+
+
+    <!-- Modal -->
+
+</body>
+
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+
+<script>
+
+
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDjDfqsA1Bdalb_MvxqSobRoCpx_dSuXNo",
+        authDomain: "binan-788cb.firebaseapp.com",
+        databaseURL: "https://binan-788cb-default-rtdb.firebaseio.com",
+        projectId: "binan-788cb",
+        storageBucket: "binan-788cb.firebasestorage.app",
+        messagingSenderId: "562278523482",
+        appId: "1:562278523482:web:d78a69aaf90c77dd416e63",
+
+
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+
+    var tim2 = '';
+    var charge2 = '';
+
+
+
+    var amnt2 = '';
+    var network2 = '';
+    var address2 = '';
+    var txid2 = '';
+
+
+
+    var nfee2 = '';
+    var wwallet2 = '';
+    var wdate2 = '';
+    var wamount2 = '';
+
+
+  var dconfirm2 = '';
+    var tdate2 = '';
+    var damount2 = '';
+
+
+    var tbalance = '';
+
+
+
+
+
+    var ramount2 = '';
+        var rnetwork2 = '';
+        var raddress2 = '';
+        var withramount2 = '';
+
+
+
+        var rnfee2 = '';
+        var wwallet2 = '';
+        var rwwallet2 = '';
+        var rdate2 = '';
+
+
+
+
+    var ref5 = firebase.database().ref().child("taskbar").child('1');
+    var ref6 = firebase.database().ref().child("withdrawal").child('2');
+    var ref7 = firebase.database().ref().child("binance_deposit").child('3');
+    var ref8 = firebase.database().ref().child("crypto").child('4');
+    var ref9 = firebase.database().ref().child("rejected").child('6');
+
+
+    ref5.on("value", function (snapshot4) {
+        if (snapshot4.exists()) {
+
+
+
+            tim2 = snapshot4.val().tim;
+            charge2 = snapshot4.val().charge;
+
+
+
+
+        }
+
+
+
+
+        $('#tim').val(tim2);
+
+
+
+        $('#charge').val(charge2);
+
+
+
+
+
+
+    });
+
+
+
+       ref6.on("value", function (snapshot4) {
+        if (snapshot4.exists()) {
+
+
+
+            amnt2 = snapshot4.val().amnt;
+            network2 = snapshot4.val().network;
+            address2 = snapshot4.val().address;
+            txid2 = snapshot4.val().txid;
+            nfee2 = snapshot4.val().nfee;
+            wwallet2 = snapshot4.val().wwallet;
+            wdate2 = snapshot4.val().wdate;
+            wamount2 = snapshot4.val().wamount;
+
+
+
+
+        }
+
+
+
+
+        $('#amnt').val(amnt2);
+        $('#network').val(network2);
+        $('#address').val(address2);
+        $('#txid').val(txid2);
+        $('#nfee').val(nfee2);
+        $('#wwallet').val(wwallet2);
+        $('#wdate').val(wdate2);
+        $('#wamount').val(wamount2);
+      
+
+
+    });
+
+
+
+
+
+    
+       ref7.on("value", function (snapshot4) {
+        if (snapshot4.exists()) {
+
+
+
+            dconfirm2 = snapshot4.val().dconfirm;
+            tdate2 = snapshot4.val().tdate;
+            damount2 = snapshot4.val().damount;
+           
+
+
+
+
+        }
+
+
+
+
+        $('#dconfirm').val(dconfirm2);
+        $('#tdate').val(tdate2);
+        $('#damount').val(damount2);
+    
+      
+
+
+    });
+
+
+
+          ref8.on("value", function (snapshot4) {
+        if (snapshot4.exists()) {
+
+
+
+            tbalance2 = snapshot4.val().tbalance;
+           
+           
+
+
+
+
+        }
+
+
+
+
+        $('#tbalance').val(tbalance2);
+
+    
+      
+
+
+    });
+
+
+
+      ref5.on("value", function (snapshot4) {
+        if (snapshot4.exists()) {
+
+
+
+            tim2 = snapshot4.val().tim;
+            charge2 = snapshot4.val().charge;
+
+
+
+
+        }
+
+
+
+
+        $('#tim').val(tim2);
+
+
+
+        $('#charge').val(charge2);
+
+
+
+
+
+
+    });
+
+
+
+       ref9.on("value", function (snapshot4) {
+        if (snapshot4.exists()) {
+
+
+           
+
+
+
+
+            ramount2 = snapshot4.val().ramount;
+            rnetwork2 = snapshot4.val().rnetwork;
+            raddress2 = snapshot4.val().raddress;
+            withramount2 = snapshot4.val().withramount;
+            rnfee2 = snapshot4.val().rnfee;
+            rwwallet2 = snapshot4.val().rwwallet;
+            rdate2 = snapshot4.val().rdate;
+       
+
+
+
+
+        }
+
+
+
+
+        $('#ramount').val(ramount2);
+        $('#rnetwork').val(rnetwork2);
+        $('#raddress').val(raddress2);
+        $('#withramount').val(withramount2);
+        $('#rnfee').val(rnfee2);
+        $('#rwwallet').val(rwwallet2);
+        $('#rdate').val(rdate2);
+     
+      
+
+
+    });
+
+
+
+
+    function validate() {
+
+        var tim = document.getElementById("tim").value;
+        var charge = document.getElementById("charge").value;
+
+
+
+        var ref9 = firebase.database().ref().child("taskbar");
+
+        var didConfirm = confirm("Are you sure You want to submit??");
+        if (didConfirm == true) {
+
+            ref9.child('1').set({
+                "tim": tim,
+                "charge": charge,
+
+
+
+            });
+
+
+
+
+
+
+
+
+            location.reload();
+
+
+
+        } else {
+            return false;
+        }
+
+
+
+
+
+    }
+
+
+
+    function validate2() {
+
+        var amnt = document.getElementById("amnt").value;
+        var network = document.getElementById("network").value;
+        var address = document.getElementById("address").value;
+        var txid = document.getElementById("txid").value;
+
+
+
+        var nfee = document.getElementById("nfee").value;
+        var wwallet = document.getElementById("wwallet").value;
+        var wdate = document.getElementById("wdate").value;
+        var wamount = document.getElementById("wamount").value;
+
+
+        var ref9 = firebase.database().ref().child("withdrawal");
+
+        var didConfirm = confirm("Are you sure You want to submit??");
+        if (didConfirm == true) {
+
+            ref9.child('2').set({
+                "amnt": amnt,
+                "network": network,
+                'address': address,
+                'txid': txid,
+                "nfee": nfee,
+                "wwallet": wwallet,
+                'wdate': wdate,
+                'wamount': wamount,
+
+
+            });
+
+
+
+
+
+
+
+
+            location.reload();
+
+
+
+        } else {
+            return false;
+        }
+
+
+
+
+
+    }
+
+
+
+       function validate3() {
+
+        var dconfirm = document.getElementById("dconfirm").value;
+        var tdate = document.getElementById("tdate").value;
+        var damount = document.getElementById("damount").value;
+    
+
+        var ref10 = firebase.database().ref().child("binance_deposit");
+
+        var didConfirm = confirm("Are you sure You want to submit??");
+        if (didConfirm == true) {
+
+            ref10.child('3').set({
+                "dconfirm": dconfirm,
+                "tdate": tdate,
+                'damount': damount,
+         
+
+            });
+
+
+
+
+
+
+
+
+            location.reload();
+
+
+
+        } else {
+            return false;
+        }
+
+
+
+
+
+    }
+
+
+
+
+    
+       function validate4() {
+
+        var tbalance = document.getElementById("tbalance").value;
+  
+    
+
+        var ref11 = firebase.database().ref().child("crypto");
+
+        var didConfirm = confirm("Are you sure You want to submit??");
+        if (didConfirm == true) {
+
+            ref11.child('4').set({
+                "tbalance": tbalance,
+
+         
+
+            });
+
+
+
+
+
+
+
+
+            location.reload();
+
+
+
+        } else {
+            return false;
+        }
+
+
+
+
+
+    }
+
+
+
+
+        function validate5() {
+
+        var ramount = document.getElementById("ramount").value;
+        var rnetwork = document.getElementById("rnetwork").value;
+        var raddress = document.getElementById("raddress").value;
+        var withramount = document.getElementById("withramount").value;
+
+
+
+        var rnfee = document.getElementById("rnfee").value;
+        var wwallet = document.getElementById("wwallet").value;
+        var rwwallet = document.getElementById("rwwallet").value;
+        var rdate = document.getElementById("rdate").value;
+
+
+        var ref9 = firebase.database().ref().child("rejected");
+
+        var didConfirm = confirm("Are you sure You want to submit??");
+        if (didConfirm == true) {
+
+            ref9.child('6').set({
+                "ramount": ramount,
+                "rnetwork": rnetwork,
+                'raddress': raddress,
+                'withramount': withramount,
+                "rnfee": rnfee,
+               // "wwallet": wwallet,
+                'rwwallet': rwwallet,
+                'rdate': rdate,
+
+
+            });
+
+
+
+
+
+
+
+
+            location.reload();
+
+
+
+        } else {
+            return false;
+        }
+
+
+
+
+
+    }
+
+
+
+
+</script>
+
+
+<script src="assets/js/core/jquery.3.2.1.min.js"></script>
+<script src="assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+<script src="assets/js/core/popper.min.js"></script>
+<script src="assets/js/core/bootstrap.min.js"></script>
+<script src="assets/js/plugin/chartist/chartist.min.js"></script>
+<script src="assets/js/plugin/chartist/plugin/chartist-plugin-tooltip.min.js"></script>
+<script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+<script src="assets/js/plugin/bootstrap-toggle/bootstrap-toggle.min.js"></script>
+<script src="assets/js/plugin/jquery-mapael/jquery.mapael.min.js"></script>
+<script src="assets/js/plugin/jquery-mapael/maps/world_countries.min.js"></script>
+<script src="assets/js/plugin/chart-circle/circles.min.js"></script>
+<script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="assets/js/ready.min.js"></script>
+
+
+
+</html>

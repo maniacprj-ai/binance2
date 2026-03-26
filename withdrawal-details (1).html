@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Withdrawal Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .phone-frame {
+      width: 390px;
+      min-height: 844px;
+      background: #ffffff;
+      border-radius: 48px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 28px 0;
+      height: 44px;
+    }
+
+    .status-time {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111;
+      letter-spacing: -0.3px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .signal-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+    }
+
+    .signal-bars span {
+      display: block;
+      width: 3px;
+      background: #111;
+      border-radius: 1px;
+    }
+
+    .signal-bars span:nth-child(1) {
+      height: 4px;
+    }
+
+    .signal-bars span:nth-child(2) {
+      height: 7px;
+    }
+
+    .signal-bars span:nth-child(3) {
+      height: 10px;
+    }
+
+    .signal-bars span:nth-child(4) {
+      height: 12px;
+      opacity: 0.3;
+    }
+
+    .wifi-icon {
+      width: 16px;
+      height: 12px;
+      position: relative;
+    }
+
+    .wifi-icon::before,
+    .wifi-icon::after,
+    .wifi-dot {
+      content: '';
+      position: absolute;
+      border: 2px solid #111;
+      border-radius: 50%;
+    }
+
+    .wifi-icon::before {
+      width: 16px;
+      height: 16px;
+      top: -2px;
+      left: 0;
+      border-bottom: none;
+      border-left: none;
+      border-right: none;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .wifi-icon::after {
+      width: 10px;
+      height: 10px;
+      top: 2px;
+      left: 3px;
+      border-bottom: none;
+      border-left: none;
+      border-right: none;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .wifi-dot {
+      width: 4px;
+      height: 4px;
+      background: #111;
+      border: none;
+      border-radius: 50%;
+      bottom: 0;
+      left: 6px;
+    }
+
+    .battery {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .battery-body {
+      width: 26px;
+      height: 13px;
+      border: 1.5px solid #111;
+      border-radius: 3px;
+      padding: 2px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .battery-fill {
+      width: 70%;
+      height: 100%;
+      background: #f0a500;
+      border-radius: 1px;
+    }
+
+    .battery-tip {
+      width: 2px;
+      height: 6px;
+      background: #111;
+      border-radius: 0 1px 1px 0;
+    }
+
+    /* Top Nav */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px 8px;
+    }
+
+    .nav-back {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+
+    .nav-back:hover {
+      background: #f5f5f5;
+    }
+
+    .nav-back svg {
+      width: 22px;
+      height: 22px;
+      color: #333;
+    }
+
+    .nav-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #111;
+      letter-spacing: -0.2px;
+    }
+
+    .nav-help {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+
+    .nav-help:hover {
+      background: #f5f5f5;
+    }
+
+    .nav-help svg {
+      width: 22px;
+      height: 22px;
+      color: #333;
+    }
+
+    /* Amount Hero */
+    .amount-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 20px 32px;
+      gap: 10px;
+    }
+
+    .amount-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: -1px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-icon {
+      width: 18px;
+      height: 18px;
+      background: #e53e3e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .status-icon::after {
+      content: '!';
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .status-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #e53e3e;
+    }
+
+    .status-reason {
+      font-size: 13px;
+      color: #aaa;
+      font-weight: 400;
+    }
+
+    /* Divider */
+    .divider {
+      height: 8px;
+      background: #f4f5f7;
+      margin: 0;
+    }
+
+    /* Detail Rows */
+    .details-section {
+      padding: 8px 0;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 16px 24px;
+    }
+
+    .detail-row:not(:last-child) {
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .detail-label {
+      font-size: 14px;
+      color: #aaa;
+      font-weight: 400;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      color: #111;
+      font-weight: 500;
+      text-align: right;
+      max-width: 65%;
+      line-height: 1.5;
+    }
+
+    .detail-value.bold {
+      font-weight: 700;
+    }
+
+    .network-badge {
+      display: inline-block;
+      background: #fff3e0;
+      color: #e65100;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .address-value {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .copy-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: #bbb;
+      margin-top: 1px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .copy-icon:hover {
+      color: #888;
+    }
+
+    /* Home indicator */
+    .home-indicator {
+      margin-top: auto;
+      display: flex;
+      justify-content: center;
+      padding: 12px 0 20px;
+    }
+
+    .home-bar {
+      width: 130px;
+      height: 5px;
+      background: #111;
+      border-radius: 3px;
+      opacity: 0.15;
+    }
+
+    /* Responsive: show as flat page on small screens */
+    @media (max-width: 440px) {
+      body {
+        background: #fff;
+        align-items: flex-start;
+      }
+
+      .phone-frame {
+        width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 100vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="status-time" id="tim"></span>
+      <div class="status-icons">
+        <div class="signal-bars">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div style="position:relative;width:16px;height:14px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round" width="16" height="16">
+            <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+            <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+            <circle cx="12" cy="20" r="1" fill="#111" />
+          </svg>
+        </div>
+        <div class="battery">
+          <div class="battery-body">
+            <div class="battery-fill"></div>
+          </div>
+          <div class="battery-tip"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+      <div class="nav-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </div>
+      <span class="nav-title">Withdrawal Details</span>
+      <div class="nav-help">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="4" />
+          <path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 2-3 2.5-3 5" />
+          <circle cx="12" cy="17.5" r=".5" fill="currentColor" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Amount Hero -->
+    <div class="amount-section">
+      <div class="amount-value"><span id="ramount"></span> USDT</div>
+      <div class="status-badge">
+        <div class="status-icon"></div>
+        <span class="status-text">Rejected</span>
+      </div>
+      <div class="status-reason">Risk Control</div>
+    </div>
+
+    <!-- Section Divider -->
+    <div class="divider"></div>
+
+    <!-- Detail Rows -->
+    <div class="details-section">
+
+      <div class="detail-row">
+        <span class="detail-label">Network</span>
+        <div class="detail-value">
+          <span class="network-badge" id="rnetwork"></span>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Address</span>
+        <div class="detail-value">
+          <div class="address-value">
+            <span id="raddress"></span>
+            <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Withdrawal Amount</span>
+        <div class="detail-value"><span id="withramount"></span> USDT</div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Network fee</span>
+        <div class="detail-value"><span id="rnfee"> </span> USDT</div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Withdrawal Wallet</span>
+        <div class="detail-value bold" id="rwwallet"></div>
+      </div>
+
+      <div class="detail-row">
+        <span class="detail-label">Date</span>
+        <div class="detail-value" id="rdate"></div>
+      </div>
+
+    </div>
+
+    <!-- Home Indicator -->
+    <div class="home-indicator">
+      <div class="home-bar"></div>
+    </div>
+
+  </div>
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+
+  <script>
+
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjDfqsA1Bdalb_MvxqSobRoCpx_dSuXNo",
+      authDomain: "binan-788cb.firebaseapp.com",
+      databaseURL: "https://binan-788cb-default-rtdb.firebaseio.com",
+      projectId: "binan-788cb",
+      storageBucket: "binan-788cb.firebasestorage.app",
+      messagingSenderId: "562278523482",
+      appId: "1:562278523482:web:d78a69aaf90c77dd416e63",
+
+
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+
+    var tim2 = '';
+    var charge2 = '';
+
+
+    var ramount2 = '';
+    var rnetwork2 = '';
+    var raddress2 = '';
+    var withramount2 = '';
+
+
+
+    var rnfee2 = '';
+    var wwallet2 = '';
+    var rwwallet2 = '';
+    var rdate2 = '';
+
+
+
+
+    var ref5 = firebase.database().ref().child("taskbar").child('1');
+
+
+    ref5.on("value", function (snapshot4) {
+      if (snapshot4.exists()) {
+
+
+
+        tim2 = snapshot4.val().tim;
+        charge2 = snapshot4.val().charge;
+
+
+
+
+      }
+
+
+
+
+      $('#tim').html(tim2);
+
+
+
+      $('#charge').html(charge2);
+
+
+
+
+
+
+    });
+
+    var ref6 = firebase.database().ref().child("rejected").child('6');
+
+    ref6.on("value", function (snapshot4) {
+      if (snapshot4.exists()) {
+
+
+
+        ramount2 = snapshot4.val().ramount;
+        rnetwork2 = snapshot4.val().rnetwork;
+        raddress2 = snapshot4.val().raddress;
+        withramount2 = snapshot4.val().withramount;
+        rnfee2 = snapshot4.val().rnfee;
+        rwwallet2 = snapshot4.val().rwwallet;
+        rdate2 = snapshot4.val().rdate;
+
+
+
+
+
+      }
+
+
+
+
+      $('#ramount').html(ramount2);
+      $('#rnetwork').html(rnetwork2);
+      $('#raddress').html(raddress2);
+      $('#withramount').html(withramount2);
+      $('#rnfee').html(rnfee2);
+      $('#rwwallet').html(rwwallet2);
+      $('#rdate').html(rdate2);
+  
+
+
+
+    });
+
+
+
+
+
+
+
+
+
+  </script>
+
+
+
+  <script src="assets/js/core/jquery.3.2.1.min.js"></script>
+  <script src="assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+</body>
+
+</html>

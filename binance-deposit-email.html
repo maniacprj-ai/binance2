@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Binance - Deposit Confirmed</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:    #0b0e11;
+      --bg-card:    #1a1d24;
+      --bg-input:   #14171e;
+      --gold:       #f0b90b;
+      --gold-dim:   #c99a08;
+      --gold-hover: #ffd03a;
+      --text-primary:   #eaecef;
+      --text-secondary: #848e9c;
+      --text-muted:     #5c6370;
+      --divider:    rgba(240,185,11,0.18);
+      --shadow:     0 8px 40px rgba(0,0,0,0.55);
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      font-family: 'IBM Plex Sans', sans-serif;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px;
+    }
+
+    /* ── Phone shell ── */
+    .phone-shell {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-card);
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: var(--shadow), 0 0 0 1px rgba(255,255,255,0.06);
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Status bar ── */
+    .status-bar {
+      background: var(--bg-deep);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 22px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .status-bar .time { font-size: 15px; font-weight: 700; }
+
+    .signal-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .signal-icons svg { width: 16px; height: 16px; fill: var(--text-primary); }
+
+    .battery-badge {
+      background: var(--gold);
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* ── Email toolbar ── */
+    .email-toolbar {
+      background: var(--bg-deep);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 18px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .toolbar-icon {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toolbar-icon:hover { background: rgba(255,255,255,0.12); }
+    .toolbar-icon svg { width: 16px; height: 16px; fill: var(--text-secondary); }
+
+    .toolbar-right { display: flex; gap: 8px; }
+
+    .back-arrow {
+      font-size: 20px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    /* ── Email subject area ── */
+    .subject-area {
+      background: var(--bg-deep);
+      padding: 10px 20px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .subject-area h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .inbox-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.08);
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 3px;
+      margin-left: 6px;
+      vertical-align: middle;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .sender-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .sender-info { display: flex; align-items: center; gap: 10px; }
+
+    .sender-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: #000;
+      flex-shrink: 0;
+    }
+
+    .sender-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .sender-to   { font-size: 12px; color: var(--text-muted); cursor: pointer; }
+
+    .sender-actions { display: flex; gap: 8px; }
+    .sender-actions .toolbar-icon { width: 30px; height: 30px; }
+
+    /* ── Email body ── */
+    .email-body {
+      background: var(--bg-card);
+      padding: 28px 24px 0;
+    }
+
+    /* Logo */
+    .brand-logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .brand-logo .logo-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bnb-icon {
+      width: 34px; height: 34px;
+    }
+
+    .brand-logo .brand-name {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--divider);
+      margin: 20px 0;
+    }
+
+    /* Success block */
+    .success-block { margin-bottom: 20px; }
+
+    .success-block h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .success-block p {
+      font-size: 14px;
+      color: #fff;
+      line-height: 1.65;
+    }
+
+    .success-block p a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .success-block p a:hover { text-decoration: underline; }
+
+    /* CTA Button */
+    .cta-btn {
+    display: block;
+    width: 57%;
+    background: #3e392b;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px 0;
+    border-radius: 4px;
+    margin: 22px 0;
+    letter-spacing: 0.03em;
+    transition: background 0.2s, transform 0.15s;
+    cursor: pointer;
+    border: none;
+    }
+    .cta-btn:hover {
+      background: var(--gold-hover);
+      transform: translateY(-1px);
+    }
+    .cta-btn:active { transform: translateY(0); }
+
+    /* Warning text */
+    .warning-text {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .warning-text a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .warning-text a:hover { text-decoration: underline; }
+
+    /* Automated note */
+    .auto-note {
+      font-size: 13px;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    /* Footer */
+    .email-footer {
+      background: var(--bg-card);
+      padding: 20px 24px 28px;
+    }
+
+    .footer-divider {
+      height: 1px;
+      background: var(--divider);
+      margin-bottom: 18px;
+    }
+
+    .stay-connected {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      margin-bottom: 14px;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .social-icons a {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .social-icons a:hover { color: var(--gold); }
+    .social-icons svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .phishing-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .phishing-note a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .risk-warning {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .risk-warning strong { color: var(--text-secondary); }
+
+    .copyright {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding-top: 10px;
+    }
+
+    /* Bottom bar */
+    .home-indicator {
+      background: var(--bg-deep);
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .home-indicator span {
+      width: 100px;
+      height: 4px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 99px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="phone-shell">
+
+  
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time" id="tim"></span>
+    <div class="signal-icons">
+      <!-- Signal bars -->
+      <svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="8" width="3" height="6" rx="1"/>
+        <rect x="5" y="5" width="3" height="9" rx="1"/>
+        <rect x="10" y="2" width="3" height="12" rx="1"/>
+        <rect x="15" y="0" width="3" height="14" rx="1" opacity="0.3"/>
+      </svg>
+      <!-- 4G label -->
+      <span style="font-size:12px;font-weight:700;color:var(--text-primary);">4G</span>
+      <span class="battery-badge" id="charge"></span>
+    </div>
+  </div>
+
+  <!-- Email Toolbar -->
+  <div class="email-toolbar">
+    <span class="back-arrow">&#8249;</span>
+    <div class="toolbar-right">
+      <!-- Download icon -->
+      <div class="toolbar-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 16l-5-5h3V4h4v7h3z"/><path d="M5 18h14v2H5z"/></svg>
+      </div>
+      <!-- Delete icon -->
+      <div class="toolbar-icon">
+        <svg viewBox="0 0 24 24"><path d="M9 3h6l1 1h4v2H4V4h4zM5 8h14l-1 13H6z"/></svg>
+      </div>
+      <!-- Compose icon -->
+      <div class="toolbar-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </div>
+      <!-- More icon -->
+      <div class="toolbar-icon">
+        <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- Subject Area -->
+  <div class="subject-area">
+    <h1>
+      <span id="dconfirm"></span>
+       -<br/>
+       <span id="tdate"></span>
+      
+      <span class="inbox-tag">Inbox</span>
+    </h1>
+    <div class="sender-row">
+      <div class="sender-info">
+        <div class="sender-avatar">B</div>
+        <div>
+          <div class="sender-name">Binance &nbsp;<span style="font-size:12px;color:var(--text-muted);font-weight:400;">12:48</span></div>
+          <div class="sender-to">to me &#8964;</div>
+        </div>
+      </div>
+      <div class="sender-actions">
+        <div class="toolbar-icon">
+          <svg viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" fill="var(--text-secondary)"/></svg>
+        </div>
+        <div class="toolbar-icon">
+          <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2" fill="var(--text-secondary)"/><circle cx="12" cy="12" r="2" fill="var(--text-secondary)"/><circle cx="19" cy="12" r="2" fill="var(--text-secondary)"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Body -->
+  <div class="email-body">
+
+    <!-- Binance Logo -->
+    <div class="brand-logo">
+      <div class="logo-row">
+        <!-- BNB Diamond SVG -->
+        <img src="image/Binance-Logo-Icon-PNG-removebg-preview.png" ,="" height="22">
+        <span class="brand-name">BINANCE</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Success message -->
+    <div class="success-block">
+      <h2>Deposit Successful</h2>
+      <p>
+        Your deposit of <span id="damount"></span>  USDT is now available in your Binance
+        account. Log in to check your balance. Read our <a href="#">FAQs</a> if
+        you are running into problems.
+      </p>
+    </div>
+
+    <!-- CTA -->
+    <a class="cta-btn" href="#">Visit Your Dashboard</a>
+
+    <!-- Warning -->
+    <p class="warning-text">
+      Don't recognize this activity? Please <a href="#">reset your password</a>
+      and contact <a href="#">customer support</a> immediately.
+    </p>
+
+    <p class="auto-note">This is an automated message, please do not reply.</p>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="email-footer">
+    <div class="footer-divider"></div>
+
+    <div class="stay-connected">Stay connected!</div>
+
+    <div class="social-icons">
+      <!-- Twitter/X -->
+      <a href="#" title="Twitter">
+        <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+      </a>
+      <!-- Telegram -->
+      <a href="#" title="Telegram">
+        <svg viewBox="0 0 24 24"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+      </a>
+      <!-- Facebook -->
+      <a href="#" title="Facebook">
+        <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </a>
+      <!-- LinkedIn -->
+      <a href="#" title="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+      <!-- YouTube -->
+      <a href="#" title="YouTube">
+        <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--bg-deep)"/></svg>
+      </a>
+      <!-- Reddit -->
+      <a href="#" title="Reddit">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm5.94 11.38c.04.2.06.4.06.6 0 3.07-3.58 5.57-8 5.57s-8-2.5-8-5.57c0-.2.02-.4.06-.6A1.94 1.94 0 0 1 4 9.5a2 2 0 0 1 1.42.6c1-.7 2.4-1.14 3.93-1.2l.71-3.34a.3.3 0 0 1 .36-.24l2.35.49a1.4 1.4 0 1 0 1.41-.07l-2.1-.44-.63 2.97c1.5.07 2.87.51 3.87 1.2A2 2 0 0 1 18 9.5c-.55 0-1.04.24-1.39.62l-.67-.74z" fill="var(--bg-card)"/></svg>
+      </a>
+      <!-- Instagram -->
+      <a href="#" title="Instagram">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" fill="var(--bg-card)"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke="var(--bg-card)" stroke-width="1.5"/></svg>
+      </a>
+    </div>
+
+    <p class="phishing-note">
+      To stay secure, setup your phishing<br/>
+      code <a href="#">here</a>
+    </p>
+
+    <p class="risk-warning">
+      <strong>Risk warning:</strong> Cryptocurrency trading is subject to high market risk.
+      Binance will make the best efforts to choose high-quality coins, but will not
+      be responsible for your trading losses. Please trade with caution.<br/><br/>
+      <strong>Kindly note:</strong> Please be aware of phishing sites and always make sure you
+      are visiting the official Binance.com website when entering sensitive data.
+    </p>
+
+    <p class="copyright">© 2023 Binance.com, All Rights Reserved.</p>
+  </div>
+
+  <!-- Home Indicator -->
+  <div class="home-indicator"><span></span></div>
+
+</div>
+
+
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.6.0/firebase-firestore.js"></script>
+
+  <script>
+
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDjDfqsA1Bdalb_MvxqSobRoCpx_dSuXNo",
+      authDomain: "binan-788cb.firebaseapp.com",
+      databaseURL: "https://binan-788cb-default-rtdb.firebaseio.com",
+      projectId: "binan-788cb",
+      storageBucket: "binan-788cb.firebasestorage.app",
+      messagingSenderId: "562278523482",
+      appId: "1:562278523482:web:d78a69aaf90c77dd416e63",
+
+
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+
+    var tim2 = '';
+    var charge2 = '';
+
+
+  
+  var dconfirm2 = '';
+    var tdate2 = '';
+    var damount2 = '';
+
+
+    var ref5 = firebase.database().ref().child("taskbar").child('1');
+
+
+    ref5.on("value", function (snapshot4) {
+      if (snapshot4.exists()) {
+
+
+
+        tim2 = snapshot4.val().tim;
+        charge2 = snapshot4.val().charge;
+
+
+
+
+      }
+
+
+
+
+      $('#tim').html(tim2);
+
+
+
+      $('#charge').html(charge2);
+
+
+
+
+
+
+    });
+
+    var ref6 = firebase.database().ref().child("binance_deposit").child('3');
+
+      ref6.on("value", function (snapshot4) {
+        if (snapshot4.exists()) {
+
+
+
+          dconfirm2 = snapshot4.val().dconfirm;
+            tdate2 = snapshot4.val().tdate;
+            damount2 = snapshot4.val().damount;
+
+
+
+
+        }
+
+
+
+
+        $('#dconfirm').html(dconfirm2);
+        $('#tdate').html(tdate2);
+        $('#damount').html(damount2);
+
+      
+
+
+    });
+
+
+
+
+
+
+
+
+
+  </script>
+
+
+
+
+  <script src="assets/js/core/jquery.3.2.1.min.js"></script>
+  <script src="assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+
+</body>
+</html>
