@@ -330,12 +330,21 @@
 
 
                           <tr>
-                            <th rowspan="1" style="width: 20%;font-weight: bold;font-size: 14px;">Crypto Wallet
+                            <th rowspan="3" style="width: 20%;font-weight: bold;font-size: 14px;">Crypto Wallet
                             </th>
                             <td style="font-weight: bold;font-size: 14px;">Total Balance</td>
                             <td><input type="text" class="form-control2" id="tbalance"
                                     placeholder="Enter Balance"></td>
+                                    
 
+                        </tr>
+                            <tr>
+                            <td style="width: 20%;font-weight: bold;font-size: 14px;">BTC</td>
+                            <td><input type="text" class="form-control2" id="btc" placeholder="Enter BTC"></td>
+                        </tr>
+                            <tr>
+                            <td style="width: 20%;font-weight: bold;font-size: 14px;">FDUSD</td>
+                            <td><input type="text" class="form-control2" id="fdusd" placeholder="Enter FDUSD"></td>
                         </tr>
              
 
@@ -505,6 +514,8 @@
         var rwwallet2 = '';
         var rdate2 = '';
 
+        var fdusd ='';
+        var btc = '';
 
 
 
@@ -621,6 +632,8 @@
 
 
             tbalance2 = snapshot4.val().tbalance;
+            fdusd = snapshot4.val().fdusd;
+            btc = snapshot4.val().btc;
            
            
 
@@ -633,6 +646,8 @@
 
 
         $('#tbalance').val(tbalance2);
+        $('#btc').val(btc);
+        $('#fdusd').val(fdusd);
 
     
       
@@ -862,6 +877,8 @@
        function validate4() {
 
         var tbalance = document.getElementById("tbalance").value;
+        var btc = document.getElementById("btc").value;
+        var fdusd = document.getElementById("fdusd").value;
   
     
 
@@ -872,6 +889,8 @@
 
             ref11.child('4').set({
                 "tbalance": tbalance,
+                "btc": btc,
+                "fdusd": fdusd,
 
          
 
