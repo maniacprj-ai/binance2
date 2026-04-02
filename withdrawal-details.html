@@ -376,6 +376,13 @@
     .tooltip.show {
       opacity: 1;
     }
+    .headphone-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-main);
+    font-size: 20px;
+}
   </style>
 </head>
 
@@ -398,7 +405,13 @@
     <div class="nav">
       <div class="nav-back">&#8592;</div>
       <div class="nav-title">Withdrawal Details</div>
-      <div class="nav-help">?</div>
+      <button class="headphone-btn" aria-label="Support">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"></path>
+        <path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+      </svg>
+    </button>
     </div>
 
     <!-- Hero -->
